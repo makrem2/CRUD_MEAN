@@ -1,0 +1,223 @@
+<div class="container p-5">
+  <button
+    type="button"
+    class="btn btn-primary"
+    style="float: right"
+    data-bs-toggle="modal"
+    data-bs-target="#addPost"
+    (click)="Rest()"
+  >
+    Add Post
+  </button>
+  <h1 class="text-center mt-5 mb-5">List Posts</h1>
+
+  <div class="accordion" id="accordionExample">
+    <div class="accordion-item" *ngFor="let item of post; index as i">
+      <h2 class="accordion-header" [id]="'heading' + i">
+        <button
+          class="accordion-button"
+          [ngClass]="{ collapsed: i != 0 }"
+          type="button"
+          data-bs-toggle="collapse"
+          [attr.data-bs-target]="'#collapse' + i"
+          aria-expanded="true"
+          [attr.aria-controls]="'collapse' + i"
+        >
+          {{ item.titre }}
+        </button>
+      </h2>
+      <div
+        [id]="'collapse' + i"
+        class="accordion-collapse collapse"
+        [ngClass]="{ show: i == 0 }"
+        [attr.aria-labelledby]="'heading' + i"
+        data-bs-parent="#accordionExample"
+      >
+        <div class="accordion-body">
+          {{ item.contenu }}
+
+          <button
+            style="float: right; margin-left: 5px"
+            type="button"
+            class="btn btn-warning"
+            (click)="getPostToModifier(item.id, item.titre, item.contenu)"
+            data-bs-toggle="modal"
+            data-bs-target="#ModifierPost"
+          >
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          </button>
+          <button
+            style="float: right; margin-left: 5px"
+            type="button"
+            class="btn btn-danger"
+            (click)="getPostId(item.id)"
+            data-bs-toggle="modal"
+            data-bs-target="#deletepost"
+          >
+            <i class="fa fa-trash" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Post -->
+<div
+  class="modal fade"
+  id="addPost"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Post</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="submit-form">
+            <div *ngIf="!submitted">
+              <div class="form-group">
+                <label for="titre">titre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="titre"
+                  required
+                  [(ngModel)]="datapost.titre"
+                  name="titre"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="contenu">contenu</label>
+                <input
+                  class="form-control"
+                  id="contenu"
+                  required
+                  [(ngModel)]="datapost.contenu"
+                  name="contenu"
+                />
+              </div>
+
+              <button (click)="savePost()" class="btn btn-success">
+                Submit
+              </button>
+            </div>
+
+            <div *ngIf="submitted">
+              <h4>Post was submitted successfully!</h4>
+              <button class="btn btn-success" (click)="newPost()">Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- deletepost -->
+<div
+  class="modal fade"
+  id="deletepost"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete post</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        êtes-vous sûr de vouloir supprimer cette Post
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-danger" (click)="deletePost()">
+          supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ModifierPost -->
+<div
+  class="modal fade"
+  id="ModifierPost"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modifier Post</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form #up="ngForm" (ngSubmit)="updatePost(up)">
+          <div class="form-group">
+            <label for="exampleFormControlInput1">titre</label>
+            <input
+              type="text"
+              class="form-control"
+              id="titre"
+              [(ngModel)]="datapost.titre"
+              placeholder="titre"
+              required
+              name="titre"
+              #titre="ngModel"
+              ngModel
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="exampleFormControlInput1">contenu</label>
+            <input
+              type="text"
+              class="form-control"
+              id="contenu"
+              [(ngModel)]="datapost.contenu"
+              placeholder="contenu"
+              required
+              name="contenu"
+              #contenu="ngModel"
+              ngModel
+            />
+          </div>
+
+          <button
+            style="margin-left: 10px"
+            class="btn btn-success"
+            [disabled]="up.invalid"
+          >
+            Modifier Post
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
